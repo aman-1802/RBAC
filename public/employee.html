@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Employee Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f0f2f5; }
+    .box { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 400px; text-align: center; }
+    h2 { color: #4a90e2; }
+    button { padding: 10px 20px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; margin-top: 24px; }
+    button:hover { background: #c0392b; }
+    #message { margin-top: 16px; color: red; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Employee Dashboard</h2>
+    <p id="welcome"></p>
+    <button onclick="logout()">Logout</button>
+    <p id="message"></p>
+  </div>
+
+  <script>
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      window.location.href = '/login.html';
+    }
+
+    async function loadDashboard() {
+      const res = await fetch('/employee/dashboard', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        document.getElementById('welcome').textContent = data.message;
+      } else {
+        document.getElementById('message').textContent = data.message;
+        setTimeout(() => window.location.href = '/login.html', 2000);
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('role');
+      window.location.href = '/login.html';
+    }
+
+    loadDashboard();
+  </script>
+</body>
+</html>

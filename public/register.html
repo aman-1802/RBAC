@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register</title>
+  <style>
+    body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f0f2f5; }
+    .box { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 300px; }
+    h2 { margin-bottom: 24px; text-align: center; }
+    input, select { width: 100%; padding: 10px; margin-bottom: 16px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+    button { width: 100%; padding: 10px; background: #27ae60; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+    button:hover { background: #219a52; }
+    #message { margin-top: 16px; text-align: center; }
+    .login-link { margin-top: 16px; text-align: center; font-size: 14px; }
+    .login-link a { color: #4a90e2; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Register</h2>
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <button onclick="register()">Create Account</button>
+    <p id="message"></p>
+    <div class="login-link">Already have an account? <a href="/login.html">Login</a></div>
+  </div>
+
+  <script>
+    async function register() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const res = await fetch('/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+      const message = document.getElementById('message');
+
+      if (res.ok) {
+        message.style.color = 'green';
+        message.textContent = 'Account created! Redirecting to login...';
+        setTimeout(() => window.location.href = '/login.html', 2000);
+      } else {
+        message.style.color = 'red';
+        message.textContent = data.message;
+      }
+    }
+  </script>
+</body>
+</html>
